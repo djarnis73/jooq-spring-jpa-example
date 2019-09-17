@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>jooq-example</groupId>
+        <artifactId>jooq-spring-jpa-example-parent</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>jooq-model</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-meta-extensions</artifactId>
+            <version>${jooq.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-meta</artifactId>
+            <version>${jooq.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq</artifactId>
+            <version>${jooq.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jooq-example</groupId>
+            <artifactId>jpa-model</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+      </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq-codegen-maven</artifactId>
+                <version>${jooq.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot</artifactId>
+                        <version>${spring.boot.version}</version>
+                    </dependency>
+                </dependencies>
+
+                <!-- The plugin should hook into the generate goal -->
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <!-- Specify the plugin configuration.
+                     The configuration format is the same as for the standalone code generator -->
+                <configuration>
+                    <!-- Generator parameters -->
+                    <generator>
+                        <generate>
+                            <javaTimeTypes>true</javaTimeTypes>
+                        </generate>
+                        <database>
+                            <name>org.jooq.meta.extensions.jpa.JPADatabase</name>
+                            <includes>.*</includes>
+                            <excludes>ERRORS</excludes>
+                            <!-- In case your database supports catalogs, e.g. SQL Server:
+                            <inputCatalog>public</inputCatalog>
+                              -->
+                            <inputSchema>PUBLIC</inputSchema>
+                            <properties>
+                                <!-- A comma separated list of Java packages, that contain your entities -->
+                                <property>
+                                    <key>packages</key>
+                                    <value>jooqexample</value>
+                                </property>
+                                <!-- Whether JPA 2.1 AttributeConverters should be auto-mapped to jOOQ Converters.
+                                     Custom <forcedType/> configurations will have a higher priority than these auto-mapped converters.
+                                     This defaults to true. -->
+                                <property>
+                                    <key>useAttributeConverters</key>
+                                    <value>true</value>
+                                </property>
+
+                                <!-- The default schema for unqualified objects:
+
+                                     - public: all unqualified objects are located in the PUBLIC (upper case) schema
+                                     - none: all unqualified objects are located in the default schema (default)
+
+                                     This configuration can be overridden with the schema mapping feature -->
+                                <property>
+                                    <key>unqualifiedSchema</key>
+                                    <value>none</value>
+                                </property>
+                                <!-- use same naming strategy as we will in the "real" database -->
+                                <property>
+                                    <key>hibernate.physical_naming_strategy</key>
+                                    <value>org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy</value>
+                                </property>
+                            </properties>
+                        </database>
+                        <target>
+                            <packageName>jooqexample.jooqmodel</packageName>
+                            <directory>target/generated-sources/jooq</directory>
+                        </target>
+                    </generator>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

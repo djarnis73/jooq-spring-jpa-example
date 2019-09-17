@@ -1,0 +1,17 @@
+spring:
+  jpa:
+    open-in-view: false #silence warning on spring startup
+    properties:
+      hibernate:
+        #optional - enable SQL statements formatting.
+        format_sql: true
+        #optional - generate statistics to check if L2/query cache is actually being used.
+        generate_statistics: false
+
+logging:
+  level:
+    org:
+      springframework:
+        transaction:
+          interceptor: INFO
+
